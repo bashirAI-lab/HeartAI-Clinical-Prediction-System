@@ -1,41 +1,74 @@
-# HeartAI: Cardiac Risk Analysis & Decision Support System
+# HeartAI - Clinical Diagnosis Support System 🏥
 
-📌 Project Overview
-HeartAI is an AI-driven clinical decision-support system designed to predict the probability of heart disease based on 13 clinical parameters. This project integrates machine learning with clinical expertise through a "Clinical Override" system to ensure patient safety.
+An AI-powered system designed to predict heart disease risk levels by combining machine learning probabilities with critical clinical markers.
 
- 🛠️ Tech Stack
-* **Backend:** Python (Flask Framework)
-* **Frontend:** HTML5, CSS3, JavaScript (Asynchronous Fetch API)
-* **Machine Learning:** Random Forest Classifier (Scikit-Learn)
-* **Deployment Port:** 8080
+---
 
- 🚀 Key Features
-* **Predictive AI:** Calculates risk probability using a pre-trained model (`heart_model.pkl`).
-* **Clinical Safety Layer:** Implements a safety logic that upgrades "Low Risk" to "High Risk" if critical markers like Major Vessels or Oldpeak are elevated.
-* **Dynamic UI:** Real-time feedback with color-coded results (Green for Low, Yellow for Moderate, Red for High).
-* **Medical Range Validation:** Input fields are restricted to clinical ranges (e.g., Cholesterol 70-400 mg/dl) to prevent data entry errors.
+## 🛠️ Installation & Setup (Required)
 
- 📂 Project Structure
-Heart_Disease_AI/ 
-data sets#for raw data before analysing
-datanalysis (1).ipynb#for cleaned,analysed and visualazed data
-final_app.py # Main Flask Server
-  templates/ # UI Components │ └── index.html # Frontend Interface
-  heart_model.pkl # Trained ML Model ├── scaler.pkl # Feature Scaling File 
- requirements.txt # Library Dependencies
- readme.md
- ⚙️ Installation & Setup
-1. **Clone the project** and navigate to the directory.
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   open Terminal and run: "python final_app.py"
-   
- Access the UI: Open http://127.0.0.1:8080 in your browser.
+To avoid library conflicts (such as `numpy` or `pkgutil` errors), please follow these steps to set up a clean Virtual Environment:
 
-🏥 Testing Scenarios
-    Low Risk: Probability < 30%.
+### 1. Create a Virtual Environment
+Navigate to the project folder in your terminal and run:
+```bash
+python -m venv venv 
+Activate the Environment
+Windows:
 
-    Moderate Risk: Probability 30% - 50%.
+Bash
 
-    High Risk: Probability > 50% OR Clinical Override (Vessels >= 2).
+venv\Scripts\activate
+Mac/Linux:
+
+Bash
+
+source venv/bin/activate
+3. Install Dependencies
+Once the environment is active, install the stable library versions:
+
+Bash
+
+pip install --upgrade pip
+pip install -r requirements.txt
+4. Run the Application
+Bash
+
+python final_app.py
+The system will be accessible at: http://127.0.0.1:8080.
+
+📊 Diagnostic Logic & Risk Levels
+The system uses a 4-level classification logic to ensure patient safety and clinical accuracy:
+
+🟢 Low Risk: Probability < 30%. Indicators are within normal clinical ranges.
+
+🟡 Moderate Risk: Probability between 30% - 60%. Suggests follow-up and lifestyle monitoring.
+
+🟠 High Risk: Probability between 60% - 85%. Requires consultation with a specialist.
+
+🔴 Very High Risk: Probability > 85% OR Clinical Red Flags (e.g., Major Vessels ca >= 2 or Oldpeak >= 2.5).
+
+🎨 Visual Indicators
+The UI dynamically changes colors based on the risk level to provide immediate visual feedback to healthcare providers:
+
+Green: Safe/Routine.
+
+Yellow: Caution/Observation.
+
+Orange: Warning/Action Required.
+
+Dark Red: Critical/Emergency.
+
+📂 Project Structure
+data sets: the raw data 
+
+datanalysis (1).ipynb:cleaned data
+
+final_app.py: The main Flask server and prediction logic.
+
+heart_model.pkl: Trained Machine Learning model.
+
+scaler.pkl: Feature scaling file for data normalization.
+
+templates/: Contains index.html for the user interface.
+
+requirements.txt: List of required libraries with stable versions.

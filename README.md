@@ -9,18 +9,22 @@ Navigate to the project folder in your terminal and run:
 
 Bash
 
-python -m venv venv
+python -m venv venv 
+
 2. Activate the Environment
-Windows:
+   
+1.Windows:
 
 Bash
 
 venv\Scripts\activate
-Mac/Linux:
+
+2.Mac/Linux:
 
 Bash
 
 source venv/bin/activate
+
 3. Install Dependencies
 Bash
 
@@ -34,9 +38,11 @@ The system will be accessible at:
  http://127.0.0.1:8080.
 
 <font color="#d35400">📊 2026 Model Optimization Update</font>
+
 We recently conducted a deep-dive analysis to enhance the system's accuracy and reliability.
 
 ✨ Latest Improvements
+
 Data Cleaning: Resolved the KeyError by correctly mapping the target column num.
 
 Error Handling: Implemented robust handling for NaN values and categorical encoding for variables like 'sex' and 'dataset'.
@@ -46,9 +52,11 @@ Multi-Model Benchmarking: Evaluated 4 different algorithms (Logistic Regression,
 Data Export: Generated and exported standardized train.csv and valid.csv for reproducibility.
 
 🏆 Best Performing Model
+
 Based on three different visualization methods (Vertical, Horizontal, and Lollipop charts), the Random Forest model was selected as the optimal choice with an accuracy of 60.33%. This provides a realistic and reliable baseline for complex clinical diagnosis.
 
 <font color="#27ae60">📈 Diagnostic Logic & Risk Levels</font>
+
 The system uses a 4-level classification logic to ensure patient safety and clinical accuracy:
 
 🟢 Low Risk: Probability < 30%. Indicators are within normal clinical ranges.

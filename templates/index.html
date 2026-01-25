@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartAI - Clinical Diagnosis System</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
+        label small { color: #e74c3c; font-weight: normal; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #219150; }
+        #resultBox { display: none; margin-top: 30px; padding: 20px; border-radius: 10px; border-left: 8px solid; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.low-risk { 
+    border-left: 10px solid #27ae60 !important; 
+    background-color: #f0fff4; 
+}
+
+.mod-risk { 
+    border-left: 10px solid #f1c40f !important; 
+    background-color: #fef9e7; 
+}
+
+.high-risk { 
+    border-left: 10px solid #e67e22 !important; 
+    background-color: #fdf2e9; 
+}
+
+.very-high-risk { 
+    border-left: 10px solid #c0392b !important; 
+    background-color: #f9ebeb; 
+}
+.mod-risk #diagnosis { color: #d4ac0d; }
+.high-risk #diagnosis { color: #d35400; }
+.very-high-risk #diagnosis { color: #8b0000; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>❤️ HeartAI: Professional Clinical Analysis</h2>
+    <hr>
+    <div class="grid">
+        <div class="input-group">
+            <label>Age <small>[20-100]</small></label>
+            <input type="number" id="age" min="20" max="100" value="50">
+        </div>
+        <div class="input-group">
+            <label>Gender</label>
+            <select id="sex">
+                <option value="1">Male</option>
+                <option value="0">Female</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Chest Pain Type <small>[0-3]</small></label>
+            <input type="number" id="cp" min="0" max="3" value="0">
+        </div>
+        <div class="input-group">
+            <label>Resting Blood Pressure <small>[80-200 mmHg]</small></label>
+            <input type="number" id="trestbps" min="80" max="200" value="120">
+        </div>
+        <div class="input-group">
+            <label>Serum Cholesterol <small>[100-500 mg/dl]</small></label>
+            <input type="number" id="chol" min="100" max="500" value="200">
+        </div>
+        <div class="input-group">
+            <label>Fasting Blood Sugar > 120</label>
+            <select id="fbs">
+                <option value="0">No (False)</option>
+                <option value="1">Yes (True)</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Resting ECG Results <small>[0-2]</small></label>
+            <input type="number" id="restecg" min="0" max="2" value="0">
+        </div>
+        <div class="input-group">
+            <label>Max Heart Rate <small>[60-220]</small></label>
+            <input type="number" id="thalach" min="60" max="220" value="150">
+        </div>
+        <div class="input-group">
+            <label>Exercise Induced Angina</label>
+            <select id="exang">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Oldpeak (ST Depression) <small>[0.0 - 6.0]</small></label>
+            <input type="number" id="oldpeak" step="0.1" min="0" max="6" value="0.0">
+        </div>
+        <div class="input-group">
+            <label>ST Slope <small>[0-2]</small></label>
+            <input type="number" id="slope" min="0" max="2" value="1">
+        </div>
+        <div class="input-group">
+            <label>Major Vessels (ca) <small>[0-3]</small></label>
+            <input type="number" id="ca" min="0" max="3" value="0">
+        </div>
+        <div class="input-group">
+            <label>Thalassemia <small>[0-3]</small></label>
+            <input type="number" id="thal" min="0" max="3" value="1">
+        </div>
+    </div>
+
+    <button onclick="runAnalysis()">Run Heart Risk Analysis</button>
+
+    <div id="resultBox">
+        <h3 id="resultStatus">Analysis Results</h3>
+        <p><strong>Diagnosis:</strong> <span id="diagnosis"></span></p>
+        <p><strong>Risk Probability:</strong> <span id="probability"></span></p>
+        <hr>
+        <p><strong>Doctor's Recommendation:</strong></p>
+        <p id="recommendation"></p>
+    </div>
+</div>
+
+<script>
+async function runAnalysis() {
+    // جمع البيانات من الحقول
+    const fields = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'];
+    const values = fields.map(id => parseFloat(document.getElementById(id).value));
+
+    try {
+        const response = await fetch('http://127.0.0.1:8080/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ "features": values })
+        });
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const box = document.getElementById('resultBox');
+            box.style.display = 'block';
+            
+            // تعبئة البيانات
+            document.getElementById('diagnosis').innerText = data.diagnosis;
+            document.getElementById('probability').innerText = data.probability;
+            document.getElementById('recommendation').innerText = data.recommendation;
+
+            // --- منطق تلوين الصندوق (الإصلاح هنا) ---
+            box.className = ''; // مسح الكلاسات القديمة أولاً
+            
+            if (data.diagnosis.includes("Very High")) {
+                box.classList.add('very-high-risk');
+            } else if (data.diagnosis.includes("High")) {
+                box.classList.add('high-risk');
+            } else if (data.diagnosis.includes("Moderate")) {
+                box.classList.add('mod-risk');
+            } else if (data.diagnosis.includes("Low")) {
+                box.classList.add('low-risk');
+            }
+
+            box.scrollIntoView({ behavior: 'smooth' });
+        }
+    } catch (error) {
+        alert("Server connection failed. Make sure Flask is running.");
+    }
+}
+</script>
+
+</body>
+</html>

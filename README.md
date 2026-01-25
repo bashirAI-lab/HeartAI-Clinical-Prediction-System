@@ -59,7 +59,9 @@ The system uses a 4-level classification logic to ensure patient safety and clin
 
 🔴 Very High Risk: Probability > 85% OR Clinical Red Flags (e.g., Major Vessels ca >= 2 or Oldpeak >= 2.5).
 
-<font color="#c0392b">📂 Project Structure</font>
+<font color="#c0392b">
+📂 Project Structure</font>
+
 Data Sets/: Raw clinical data.
 
 Heart Disease Diagnostic Analysis.ipynb: The finalized analysis notebook containing the 3 comparison charts.
